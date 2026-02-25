@@ -7,7 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
   renderScoresTable();
   renderManageTests();
 });
-
+// static/script.js
+fetch("https://verityb.onrender.com")
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    document.getElementById("quiz-container").innerText = JSON.stringify(data);
+  });
 // --- Tab switching ---
 function switchTab(tabName, el) {
   document.querySelectorAll('.admin-main > section').forEach(s => s.classList.add('hidden'));
