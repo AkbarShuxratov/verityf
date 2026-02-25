@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-fetch("https://verityb.onrender.com")
+fetch("https://verityb-1.onrender.com")
   .then(response => response.json())
   .then(data => {
     console.log(data);
