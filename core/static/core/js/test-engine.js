@@ -9,7 +9,12 @@ let flagged = new Set();
 let timerInterval = null;
 let remainingSeconds = 0;
 let timerVisible = true;
-
+fetch("https://verityb.onrender.com")
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    document.getElementById("quiz-container").innerText = JSON.stringify(data);
+  });
 document.addEventListener('DOMContentLoaded', () => {
   if (!Verity.requireAuth()) return;
 
