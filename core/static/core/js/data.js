@@ -1,7 +1,12 @@
 /* ============================================
    VERITY — Sample Test Data
    ============================================ */
-
+fetch("https://verityb.onrender.com")
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    document.getElementById("quiz-container").innerText = JSON.stringify(data);
+  });
 const VERITY_TESTS = [
   {
     id: 'sat-math-1',
