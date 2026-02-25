@@ -9,7 +9,7 @@ let flagged = new Set();
 let timerInterval = null;
 let remainingSeconds = 0;
 let timerVisible = true;
-fetch("https://verityb.onrender.com")
+fetch("https://verityb-1.onrender.com")
   .then(response => response.json())
   .then(data => {
     console.log(data);
