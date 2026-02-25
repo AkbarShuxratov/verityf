@@ -1,0 +1,101 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Verity — A professional, Bluebook-style testing platform for SAT, ACT, GRE, and more." />
+  <title>Verity — Your Testing Platform</title>
+  <link rel="stylesheet" href="{% static 'core/css/styles.css' %}" />
+
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">
+      <div class="logo-icon">V</div>
+      Verity
+    </a>
+    <div class="navbar-links">
+      <a href="/admin/">Admin</a>
+    </div>
+  </nav>
+
+  <!-- Hero + Auth -->
+  <section class="hero">
+    <!-- Floating particles -->
+    <div id="particles" style="
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          overflow: hidden;
+          z-index: 0;
+        "></div>
+
+    <div class="hero-content">
+      <h1>Master Every Test with <span>Verity</span></h1>
+      <p class="subtitle">
+        Practice SAT, ACT, GRE and more with our Bluebook-style testing
+        engine. Track progress, review answers, and improve your scores.
+      </p>
+
+      <!-- Auth Card -->
+      <div class="auth-card" id="authCard">
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="signin" id="tabSignin">
+            Sign In
+          </button>
+          <button class="auth-tab" data-tab="signup" id="tabSignup">
+            Sign Up
+          </button>
+        </div>
+
+
+
+        <!-- Sign In Form -->
+        <form class="auth-form" id="signinForm">
+          <div class="input-group">
+            <label for="signinEmail">Email</label>
+            <input type="email" id="signinEmail" class="input" placeholder="you@example.com" required />
+          </div>
+          <div class="input-group">
+            <label for="signinPassword">Password</label>
+            <input type="password" id="signinPassword" class="input" placeholder="Enter your password" required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%">
+            Sign In
+          </button>
+        </form>
+
+        <!-- Sign Up Form (hidden by default) -->
+        <form class="auth-form hidden" id="signupForm">
+          <div class="input-group">
+            <label for="signupName">Full Name</label>
+            <input type="text" id="signupName" class="input" placeholder="John Doe" required />
+          </div>
+          <div class="input-group">
+            <label for="signupEmail">Email</label>
+            <input type="email" id="signupEmail" class="input" placeholder="you@example.com" required />
+          </div>
+          <div class="input-group">
+            <label for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" class="input" placeholder="Create a password" required
+              minlength="6" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%">
+            Create Account
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>var CSRF_TOKEN = '{{ csrf_token }}'; var VERITY_USER = null;</script>
+  <script src="{% static 'core/js/utils.js' %}"></script>
+  <script src="{% static 'core/js/auth.js' %}"></script>
+</body>
+
+</html>

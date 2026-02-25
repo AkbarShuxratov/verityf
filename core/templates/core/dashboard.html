@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Verity Dashboard — Select tests, view past scores, and track your progress.">
+  <title>Dashboard — Verity</title>
+  <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/dashboard/" class="navbar-brand">
+      <div class="logo-icon">V</div>
+      Verity
+    </a>
+    <div class="navbar-links">
+      <a href="/dashboard/" class="active">Dashboard</a>
+      <a href="/admin/">Admin</a>
+      <div id="userNav"></div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Welcome -->
+    <div style="padding-top:32px;margin-bottom:8px">
+      <h1 id="welcomeMsg">Welcome back</h1>
+      <p class="subtitle" id="welcomeSub">Choose a test to begin or review your past performance.</p>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card">
+        <div class="stat-label">Tests Taken</div>
+        <div class="stat-value" id="statTests">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg Score</div>
+        <div class="stat-value" id="statAvg">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Best Score</div>
+        <div class="stat-value" id="statBest">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Study Time</div>
+        <div class="stat-value" id="statTime">0m</div>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="dashboard-grid">
+      <!-- Left: Test Categories -->
+      <div>
+        <h2 style="margin-bottom:20px">Available Tests</h2>
+        <div id="testCategories" class="test-categories">
+          <!-- Skeleton loaders -->
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
+
+      <!-- Right: Score History -->
+      <div>
+        <div class="card" style="position:sticky;top:88px">
+          <h3 style="margin-bottom:16px">Recent Scores</h3>
+          <div class="score-history" id="scoreHistory">
+            <p style="color:var(--text-muted);font-size:0.9rem;">No tests completed yet. Take a test to see your scores
+              here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test Picker Modal -->
+  <div class="review-overlay hidden" id="testPickerModal">
+    <div class="review-panel">
+      <div class="flex justify-between items-center" style="margin-bottom:24px">
+        <h2 id="pickerTitle">Select a Test</h2>
+        <button class="btn btn-ghost btn-icon" onclick="closeTestPicker()">✕</button>
+      </div>
+      <div id="pickerList" style="display:flex;flex-direction:column;gap:12px"></div>
+    </div>
+  </div>
+
+  <script>var VERITY_USER = {{ user_data| safe }};</script>
+  <script src="{% static 'core/js/utils.js' %}"></script>
+  <script src="{% static 'core/js/data.js' %}"></script>
+  <script src="{% static 'core/js/dashboard.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Verity Admin — Track student performance and manage tests">
+  <title>Admin — Verity</title>
+  <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/dashboard/" class="navbar-brand">
+      <div class="logo-icon">V</div>
+      Verity
+    </a>
+    <div class="navbar-links">
+      <a href="/dashboard/">Dashboard</a>
+      <a href="/admin/" class="active">Admin</a>
+      <div id="userNav"></div>
+    </div>
+  </nav>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div style="margin-bottom:24px">
+        <h4 style="color:#fff;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;opacity:0.5">Admin Panel
+        </h4>
+      </div>
+      <a href="#" class="active" onclick="switchTab('scores',this)" id="tabScores">📊 Student Scores</a>
+      <a href="#" onclick="switchTab('addTest',this)" id="tabAdd">📝 Add New Test</a>
+      <a href="#" onclick="switchTab('manage',this)" id="tabManage">⚙️ Manage Tests</a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <!-- Scores Tab -->
+      <section id="panelScores">
+        <div class="flex justify-between items-center" style="margin-bottom:24px">
+          <div>
+            <h2>Student Scores</h2>
+            <p class="subtitle" style="font-size:0.95rem">View all test results from <code>verity_results</code></p>
+          </div>
+          <div class="flex gap-sm">
+            <select class="input" id="filterCategory" style="width:140px;padding:8px 12px"
+              onchange="renderScoresTable()">
+              <option value="">All Categories</option>
+              <option value="SAT">SAT</option>
+              <option value="ACT">ACT</option>
+              <option value="GRE">GRE</option>
+            </select>
+            <button class="btn btn-secondary btn-sm" onclick="exportCSV()">📥 Export CSV</button>
+          </div>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="stats-row" style="margin-bottom:24px" id="adminStats">
+          <div class="stat-card">
+            <div class="stat-label">Total Results</div>
+            <div class="stat-value" id="adminTotal">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Unique Students</div>
+            <div class="stat-value" id="adminStudents">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Average Score</div>
+            <div class="stat-value" id="adminAvg">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Pass Rate (≥70%)</div>
+            <div class="stat-value" id="adminPass">—</div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:0;overflow-x:auto">
+          <table class="data-table" id="scoresTable">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Test</th>
+                <th>Category</th>
+                <th>Score</th>
+                <th>Correct</th>
+                <th>Time</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="scoresBody">
+              <tr>
+                <td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted)">No results yet. Students
+                  need to take tests first.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Add Test Tab -->
+      <section id="panelAddTest" class="hidden">
+        <h2 style="margin-bottom:8px">Add New Test</h2>
+        <p class="subtitle" style="margin-bottom:24px;font-size:0.95rem">Create a new test easily using the form below.
+        </p>
+
+        <div class="card" style="max-width:800px; padding: 24px;">
+          <form id="addTestForm" onsubmit="event.preventDefault(); submitUserFriendlyTest();">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+              <div class="input-group">
+                <label>Test ID (e.g. custom-math-1)</label>
+                <input type="text" id="testId" class="input" required>
+              </div>
+              <div class="input-group">
+                <label>Test Name</label>
+                <input type="text" id="testName" class="input" required>
+              </div>
+              <div class="input-group">
+                <label>Category (e.g. SAT, ACT, Custom)</label>
+                <input type="text" id="testCategory" class="input" required>
+              </div>
+              <div class="input-group">
+                <label>Duration (minutes)</label>
+                <input type="number" id="testDuration" class="input" min="1" required>
+              </div>
+              <div class="input-group">
+                <label>Icon (emoji)</label>
+                <input type="text" id="testIcon" class="input" placeholder="🌟" value="🌟">
+              </div>
+              <div class="input-group">
+                <label>Theme Color</label>
+                <input type="color" id="testColor" class="input" value="#6366f1" style="height: 42px; padding: 2px;">
+              </div>
+            </div>
+            <div class="input-group" style="margin-bottom: 24px;">
+              <label>Description</label>
+              <textarea id="testDesc" class="input" rows="2"></textarea>
+            </div>
+
+            <div style="margin-bottom: 24px;">
+              <div class="flex justify-between items-center" style="margin-bottom: 16px;">
+                <h3>Questions</h3>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="addQuestionField()">+ Add
+                  Question</button>
+              </div>
+              <div id="questionsContainer" style="display: flex; flex-direction: column; gap: 16px;">
+                <!-- Questions will be injected here -->
+              </div>
+            </div>
+
+            <div class="flex gap-sm">
+              <button type="submit" class="btn btn-primary" style="flex: 1;">Create Test</button>
+            </div>
+            <div id="formFeedback" style="margin-top:16px"></div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Manage Tests Tab -->
+      <section id="panelManage" class="hidden">
+        <h2 style="margin-bottom:8px">Manage Tests</h2>
+        <p class="subtitle" style="margin-bottom:24px;font-size:0.95rem">View and manage all available tests including
+          custom ones.</p>
+        <div id="manageTestsList"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>var VERITY_USER = {{ user_data| safe }};</script>
+  <script src="{% static 'core/js/utils.js' %}"></script>
+  <script src="{% static 'core/js/data.js' %}"></script>
+  <script src="{% static 'core/js/admin.js' %}"></script>
+</body>
+
+</html>

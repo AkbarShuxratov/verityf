@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Verity Test Engine — Bluebook-style testing interface">
+  <title>Test — Verity</title>
+  <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+</head>
+
+<body>
+  <!-- Fixed Test Header -->
+  <header class="test-header" id="testHeader">
+    <div class="brand">
+      <div class="logo-icon" style="width:28px;height:28px;font-size:0.75rem;border-radius:4px">V</div>
+      <span id="testTitle">Loading...</span>
+    </div>
+    <div class="flex items-center gap">
+      <button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:#fff;border:none" id="toggleTimer"
+        title="Show/Hide Timer">
+        🕐 <span id="timerDisplay">--:--</span>
+      </button>
+      <button class="btn btn-sm btn-danger" id="btnFinish" style="display:none">Finish Test</button>
+    </div>
+  </header>
+
+  <div class="test-body">
+    <!-- Sidebar: Question Grid -->
+    <aside class="test-sidebar" id="sidebar">
+      <div style="margin-bottom:16px">
+        <h4 style="margin-bottom:4px">Questions</h4>
+        <p style="font-size:0.8rem;color:var(--text-muted)" id="progressText">0 / 0 answered</p>
+      </div>
+      <div class="question-grid" id="questionGrid"></div>
+      <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border)">
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px">Legend</div>
+        <div class="flex flex-col gap-sm" style="font-size:0.8rem">
+          <div class="flex items-center gap-sm"><span
+              style="width:14px;height:14px;background:var(--accent);border-radius:3px;display:inline-block"></span>
+            Current</div>
+          <div class="flex items-center gap-sm"><span
+              style="width:14px;height:14px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:3px;display:inline-block"></span>
+            Answered</div>
+          <div class="flex items-center gap-sm"><span
+              style="width:14px;height:14px;background:var(--warning-soft);border:1px solid var(--warning);border-radius:3px;display:inline-block"></span>
+            Flagged</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main: Question Content -->
+    <main class="test-main" id="testMain">
+      <!-- Loading skeleton -->
+      <div id="questionLoading">
+        <div class="skeleton skeleton-title" style="width:40%;margin-bottom:24px"></div>
+        <div class="skeleton skeleton-text" style="width:90%"></div>
+        <div class="skeleton skeleton-text" style="width:75%"></div>
+        <div class="skeleton skeleton-text" style="width:60%;margin-bottom:32px"></div>
+        <div class="skeleton" style="height:56px;margin-bottom:10px"></div>
+        <div class="skeleton" style="height:56px;margin-bottom:10px"></div>
+        <div class="skeleton" style="height:56px;margin-bottom:10px"></div>
+        <div class="skeleton" style="height:56px"></div>
+      </div>
+
+      <!-- Question Block (hidden until loaded) -->
+      <div id="questionBlock" class="hidden">
+        <div class="flex justify-between items-center" style="margin-bottom:24px">
+          <span style="font-size:0.85rem;font-weight:600;color:var(--text-muted)" id="questionLabel">Question 1 of
+            8</span>
+          <button class="btn btn-ghost btn-sm" id="btnFlag" onclick="toggleFlag()">⚑ Flag</button>
+        </div>
+        <div class="question-text" id="questionText"></div>
+        <div id="optionsContainer"></div>
+        <div class="question-nav">
+          <button class="btn btn-secondary" id="btnPrev" onclick="prevQuestion()">← Previous</button>
+          <button class="btn btn-primary" id="btnNext" onclick="nextQuestion()">Next →</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Review Overlay -->
+  <div class="review-overlay hidden" id="reviewOverlay">
+    <div class="review-panel">
+      <h2 style="margin-bottom:8px">📋 Final Review</h2>
+      <p style="color:var(--text-secondary);margin-bottom:20px">Review your answers before submitting. You can click any
+        question to go back and change your answer.</p>
+      <div class="flex gap" style="margin-bottom:16px">
+        <div class="stat-card" style="flex:1;text-align:center;padding:14px">
+          <div class="stat-label">Answered</div>
+          <div class="stat-value" style="font-size:1.4rem" id="reviewAnswered">0</div>
+        </div>
+        <div class="stat-card" style="flex:1;text-align:center;padding:14px">
+          <div class="stat-label">Unanswered</div>
+          <div class="stat-value" style="font-size:1.4rem;color:var(--danger)" id="reviewUnanswered">0</div>
+        </div>
+        <div class="stat-card" style="flex:1;text-align:center;padding:14px">
+          <div class="stat-label">Flagged</div>
+          <div class="stat-value" style="font-size:1.4rem;color:var(--warning)" id="reviewFlagged">0</div>
+        </div>
+      </div>
+      <div class="review-grid" id="reviewGrid"></div>
+      <div class="flex gap" style="margin-top:24px">
+        <button class="btn btn-secondary" style="flex:1" onclick="closeReview()">← Back to Test</button>
+        <button class="btn btn-primary" style="flex:1" onclick="submitTest()">Submit Test ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Overlay -->
+  <div class="review-overlay hidden" id="resultsOverlay">
+    <div class="review-panel" style="text-align:center">
+      <div style="font-size:4rem;margin-bottom:8px" id="resultEmoji">🎉</div>
+      <h2 id="resultTitle">Test Complete!</h2>
+      <p style="color:var(--text-secondary);margin-bottom:24px" id="resultSubtitle"></p>
+      <div style="font-size:3.5rem;font-weight:900;margin:16px 0" id="resultScore">—</div>
+      <p style="color:var(--text-muted);margin-bottom:24px" id="resultDetail"></p>
+      <div class="flex gap">
+        <button class="btn btn-secondary" style="flex:1" onclick="viewAnswers()">Review Answers</button>
+        <a href="/dashboard/" class="btn btn-primary" style="flex:1">Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <script>var VERITY_USER = {{ user_data| safe }};</script>
+  <script src="{% static 'core/js/utils.js' %}"></script>
+  <script src="{% static 'core/js/data.js' %}"></script>
+  <script src="{% static 'core/js/test-engine.js' %}"></script>
+</body>
+
+</html>
