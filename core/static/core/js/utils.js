@@ -13,7 +13,12 @@ const Verity = {
       window.location.href = url;
     }
   },
-
+fetch("https://verityb.onrender.com")
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    document.getElementById("quiz-container").innerText = JSON.stringify(data);
+  });
   // --- Toast Notifications ---
   toast(message, type = "info") {
     let container = document.querySelector(".toast-container");
